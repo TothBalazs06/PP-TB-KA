@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Entities
+﻿namespace EntitesLib
 {
-    public class GrassState
+    public enum GrassState
     {
+        Young,
+        Mature,
+        Old,
+        Empty
     }
 }
