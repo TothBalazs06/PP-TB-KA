@@ -18,12 +18,17 @@ namespace PTPB_FoxAndRabbits
 
             Console.WriteLine("Nyomj Entert a következő körhöz!");
             //ide kerülnek majd a rókák és nyulak meghívásai
-            //nagyjábol így: engine.AddRabbit(1,1)
+            engine.AddRabbit(1, 1);
+            engine.AddRabbit(1, 1);
+            engine.AddRabbit(1, 2);
+            engine.AddFox(2, 2);
+            engine.AddFox(2, 3);
+            engine.AddFox(3, 4);
             while (true)
             {
                 Console.ReadLine();
-                //ide kerül majd még a engine.NextTurn()
-                //és a engine.DisplayGrid() ha azok elkészülnek a SimEngine-ben.
+                //engine.NextTurn()
+                engine.DisplayGrid();
             }
         }
     }
