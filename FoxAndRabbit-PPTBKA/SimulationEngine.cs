@@ -50,7 +50,7 @@ namespace FoxAndRabbit_PPTBKA
         {
             if (IsWithinBounds(x, y) && grid[x, y].Fox == null)
             {
-                //grid[x, y].Fox = new Fox();//még nincs kész
+                grid[x, y].Fox = new Fox();
             }
         }
 

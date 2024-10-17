@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FoxAndRabbit-PPTBKA")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+55c46c80ef685e3f3668e93865555782f1e66f98")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+361ae6fa7603867025cc33343f770fda2950e279")]
 [assembly: System.Reflection.AssemblyProductAttribute("FoxAndRabbit-PPTBKA")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FoxAndRabbit-PPTBKA")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
