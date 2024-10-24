@@ -1,7 +1,7 @@
 ﻿using EntitesLib;
 using System;
 
-namespace PTPBKA_FoxAndRabbits
+namespace PTPB_FoxAndRabbits
 {
     public class SimulationEngine
     {
@@ -129,6 +129,42 @@ namespace PTPBKA_FoxAndRabbits
 
                             cell.UpdateGrass(); // Frissítjük a füvet a celllán
                         }
+
+
+                        if (cell.Fox != null) // Csak akkor történik bármi ha van róka a cellában
+                        {
+                            // Róka mozgatása
+                            cell.Fox.Move(grid, i, j);
+
+                            // Az evéshez ellenőrizzük hogy van-e nyúl a közelben
+                            if (TryFindRabbitInAdjacentCells(i, j, out int rabbitX, out int rabbitY) && cell.Fox != null)
+                            {
+                                cell.Fox.EatRabbit(); // A róka megeszi a nyulat
+                                Console.WriteLine($"Róka a ({i}, {j}) koordinátán megevett egy nyulat ({rabbitX}, {rabbitY}).");
+                                grid[rabbitX, rabbitY].Rabbit = null; //Nyulat töröljük ha megették
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Róka a ({i}, {j}) koordinátán nem talált nyulat az evéshez.");
+                            }
+
+                            // Meghívjuk a Survive() metódust mely megnézi hogy él-e a róka
+                            if (cell.Fox != null && !cell.Fox.Survive())
+                            {
+                                Console.WriteLine($"Róka a ({i}, {j}) koordinátán elpusztult");
+                                cell.Fox = null; // A rókát töröljük ha már nem él
+                            }
+                            else if (cell.Fox != null) // Ha viszont még él akkor megpróbál reprodukálódni 
+                            {
+                                Fox newFox = cell.Fox.Reproduce();
+                                if (newFox != null)
+                                {
+                                    // Megpróbáljuk lehelyezni egy közeli cellába
+                                    AddFoxToAdjacentCell(i, j);
+                                }
+                            }
+                        }
+
 
                         // Frissítsjük a füvet az adott cellán
                         cell.UpdateGrass();
