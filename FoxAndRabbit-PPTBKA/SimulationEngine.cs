@@ -1,7 +1,7 @@
 ﻿using EntitesLib;
 using System;
 
-namespace PTPB_FoxAndRabbits
+namespace PPTBKA_FoxAndRabbits
 {
     public class SimulationEngine
     {
@@ -32,7 +32,7 @@ namespace PTPB_FoxAndRabbits
 
         }
 
-        //ez a metódus hozzáad egy nyulat X,Y koordinátára
+        //Ez a metódus hozzáad egy nyulat X,Y koordinátára
         public void AddRabbit(int x, int y)
         {
             if (IsWithinBounds(x, y) && grid[x, y].Rabbit == null)
@@ -41,43 +41,12 @@ namespace PTPB_FoxAndRabbits
             }
         }
 
-        //ez a metódus hozzáad egy rókát X,Y koordinátára
+        //Ez a metódus hozzáad egy rókát X,Y koordinátára
         public void AddFox(int x, int y)
         {
             if (IsWithinBounds(x, y) && grid[x, y].Fox == null)
             {
                 grid[x, y].Fox = new Fox();
-            }
-        }
-
-        // a nyúl és a rókák hozzáadásához szükséges, ugyanis ha a felh. megadott szamok kisebbek mint az alap akkor hibas lenne a kod
-        private bool IsWithinBounds(int x, int y)
-        {
-            return x >= 0 && x < width && y >= 0 && y < height;
-        }
-
-        // a grid megjelenítése
-        public void DisplayGrid()
-        {
-            for (int i = 0; i < width; i++)
-            {
-                for (int j = 0; j < height; j++)
-                {
-                    var cell = grid[i, j];
-                    if (cell.Rabbit != null)
-                    {
-                        Console.Write("R ");
-                    }
-                    else if (cell.Fox != null)
-                    {
-                        Console.Write("F ");
-                    }
-                    else
-                    {
-                        Console.Write(". ");
-                    }
-                }
-                Console.WriteLine();
             }
         }
 
@@ -130,7 +99,6 @@ namespace PTPB_FoxAndRabbits
                             cell.UpdateGrass(); // Frissítjük a füvet a celllán
                         }
 
-
                         if (cell.Fox != null) // Csak akkor történik bármi ha van róka a cellában
                         {
                             // Róka mozgatása
@@ -165,7 +133,6 @@ namespace PTPB_FoxAndRabbits
                             }
                         }
 
-
                         // Frissítsjük a füvet az adott cellán
                         cell.UpdateGrass();
                     }
@@ -177,6 +144,105 @@ namespace PTPB_FoxAndRabbits
             }
         }
 
+        private bool TryFindRabbitInAdjacentCells(int x, int y, out int rabbitX, out int rabbitY)
+        {
+            // Megnézzük hogy van-e a közelben nyúl (fel, le, balra, jobbra)
+            int[,] directions = new int[,] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
+            for (int d = 0; d < directions.GetLength(0); d++)
+            {
+                int newX = x + directions[d, 0];
+                int newY = y + directions[d, 1];
 
+                if (IsWithinBounds(newX, newY) && grid[newX, newY].Rabbit != null)
+                {
+                    rabbitX = newX;
+                    rabbitY = newY;
+                    return true; // Találtunk nyulat
+                }
+            }
+
+            rabbitX = -1;
+            rabbitY = -1;
+            return false; // Nem találtunk
+        }
+
+
+        private void AddFoxToAdjacentCell(int x, int y)
+        {
+            // Megnézzük hogy le tudunk-e rakni rókát (fel, le, balra, jobbra)
+            int[,] directions = new int[,] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
+            for (int d = 0; d < directions.GetLength(0); d++)
+            {
+                int newX = x + directions[d, 0];
+                int newY = y + directions[d, 1];
+
+                if (IsWithinBounds(newX, newY) && grid[newX, newY].Fox == null)
+                {
+                    grid[newX, newY].Fox = new Fox();
+                    Console.WriteLine($"Új rójka a ({newX}, {newY}) koordinátán");
+                    return;
+                }
+            }
+            //Console.WriteLine("Nincs hely új rókának.");
+        }
+        private void AddRabbitToAdjacentCell(int x, int y)
+        {
+            // Ugyanaz mint a rókánál
+            int[,] directions = new int[,] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
+            for (int d = 0; d < directions.GetLength(0); d++)
+            {
+                int newX = x + directions[d, 0];
+                int newY = y + directions[d, 1];
+
+                if (IsWithinBounds(newX, newY) && grid[newX, newY].Rabbit == null)
+                {
+                    grid[newX, newY].Rabbit = new Rabbit();
+                    Console.WriteLine($"Új nyúl született a ({newX}, {newY}) koordinátán.");
+                    return;
+                }
+            }
+            //Console.WriteLine("Nem volt hely ");
+        }
+        // a nyúl és a rókák hozzáadásához szükséges, ugyanis ha a felh. megadott szamok kisebbek mint az alap akkor hibas lenne a kod
+        public bool IsWithinBounds(int x, int y)
+        {
+            return x >= 0 && x < width && y >= 0 && y < height;
+        }
+
+        // Teszteléshez használt metódus, visszadja az adott cellát.
+        public Cell GetCell(int x, int y)
+        {
+            if (IsWithinBounds(x, y))
+            {
+                return grid[x, y];
+            }
+            throw new ArgumentOutOfRangeException($"A koordináták ({x}, {y}) nincsenek határon belül.");
+        }
+
+
+        // a grid megjelenítése
+        public void DisplayGrid()
+        {
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    var cell = grid[i, j];
+                    if (cell.Rabbit != null)
+                    {
+                        Console.Write("R ");
+                    }
+                    else if (cell.Fox != null)
+                    {
+                        Console.Write("F ");
+                    }
+                    else
+                    {
+                        Console.Write(". ");
+                    }
+                }
+                Console.WriteLine();
+            }
+        }
     }
 }

@@ -1,8 +1,7 @@
 ﻿using System;
 using EntitesLib;
-using FoxAndRabbit_PPTBKA;
-
-namespace PTPB_FoxAndRabbits
+using PPTBKA_FoxAndRabbits;
+namespace PPTBKA_FoxAndRabbits
 {
     public class Program
     {
