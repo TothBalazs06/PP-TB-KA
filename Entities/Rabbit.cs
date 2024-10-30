@@ -2,16 +2,20 @@
 {
     public class Rabbit
     {
-        public int Age { get; private set; }
+        private const int MaxAge = 5; // Maximum életkor
+        private const int MinimumAgeToReproduce = 1; // Minimum életkor a szaporodáshoz
+        private const int ReproductionEnergyThreshold = 8; // Ennyi energiára van szüksége a nyúlnak a szaporodáshoz
+        private const int MinimumEnergyToSurvive = 0; // Ha a nyúlnak energiája kisebb mint ez, akkor meghal
+        public int Age { get; private set; } 
         public bool IsAlive { get; private set; }
-        private const int MaxAge = 5; // max eletkor
-        public int Energy;
+        public int Energy; // Azért publikus mert a tesztesetekhez szükséges
+
 
         public Rabbit()
         {
-            Energy = 10; // alap energia szint
+            Energy = 3; // Alap energia szint
             Age = 0;
-            IsAlive = true; // élőként indul
+            IsAlive = true; // Élőként indul
         }
 
         public void Move(Cell[,] grid, int x, int y)
@@ -22,11 +26,11 @@
 
             if (newX >= 0 && newX < grid.GetLength(0) && newY >= 0 && newY < grid.GetLength(1))
             {
-                // csak akkor mozog ha üres a cella
+                // Csak akkor mozog, ha üres a cella
                 if (grid[newX, newY].Rabbit == null && grid[newX, newY].Fox == null)
                 {
                     grid[newX, newY].Rabbit = this;
-                    grid[x, y].Rabbit = null; // cella elhagyása
+                    grid[x, y].Rabbit = null; // Cella elhagyása
                 }
             }
         }
@@ -36,50 +40,40 @@
         {
             if (grass == GrassState.Young)
             {
-                Console.WriteLine("Egy nyúl evett.");
-                grass = GrassState.Empty;
-                Energy += 5; //növeli az energiát
+                Energy += 1; //Növeli az energiát
             }
             else if (grass == GrassState.Mature)
             {
-                Console.WriteLine("Egy nyúl evett.");
-                grass = GrassState.Empty;
-                Energy += 7; //növeli az energiát
+                Energy += 2; //Növeli az energiát
             }
             else if (grass == GrassState.Old)
             {
-                Console.WriteLine("Egy nyúl evett.");
-                grass = GrassState.Empty;
-                Energy += 3; //növeli az energiát
-            }
-            else
-            {
-                Console.WriteLine("Egy nyúl nem tudott enni.");
+                Energy += 3; //Növeli az energiát
             }
         }
 
 
         public bool Survive()
         {
-            // ellenorzi hogy elhet-e a nyul
+            // Ellenőrzi hogy élhet-e a nyúl
             Age++;
-            Energy--; // csokkenti a nyul energia szintjet
-            if (Energy < 0 || Age > MaxAge)
+            Energy--; // Csökkenti a nyúl energiaszintjét
+            if (Energy < MinimumEnergyToSurvive || Age > MaxAge)
             {
-                IsAlive = false; // meghal
+                IsAlive = false; // Meghal
             }
             return IsAlive;
         }
 
         public Rabbit Reproduce()
         {
-            if (IsAlive && Age > 1 && Energy > 5) // szapordik a nyúl ha megfelel
+            if (IsAlive && Age > MinimumAgeToReproduce && Energy > ReproductionEnergyThreshold) // Szapordik a nyúl, ha megfelel a feltételnek 
             {
                 Energy -= 2;
                 Console.WriteLine("Egy nyúl szaporodott.");
-                return new Rabbit(); // visszad egy új nyulat
+                return new Rabbit(); // Visszaad egy új nyulat
             }
-            return null; // nincs szaporodás
+            return null; // Nincs szaporodás
         }
     }
 }

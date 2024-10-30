@@ -24,7 +24,7 @@ namespace TestLib
 
             engine.AddFox(3, 3);
 
-            Assert.IsNotNull(engine.GetCell(3, 3).Fox, "Egy tókának kell lennie a (3,3) koordinátán.");
+            Assert.IsNotNull(engine.GetCell(3, 3).Fox, "Egy rókának kell lennie a (3,3) koordinátán.");
         }
 
         [TestMethod]
@@ -32,8 +32,8 @@ namespace TestLib
         {
             var engine = new SimulationEngine(5, 5);
 
-            Assert.IsTrue(engine.IsWithinBounds(0, 0), "Bal-Felsõ koordináták a határon belül kell hogy legyenek.");
-            Assert.IsTrue(engine.IsWithinBounds(4, 4), "Jobb-Alsó koordináták a határon belül kell hogy legyenek.");
+            Assert.IsTrue(engine.IsWithinBounds(0, 0), "Bal-Felsõ koordináták a határon belül kell, hogy legyenek.");
+            Assert.IsTrue(engine.IsWithinBounds(4, 4), "Jobb-Alsó koordináták a határon belül kell, hogy legyenek.");
         }
 
         [TestMethod]
@@ -43,6 +43,8 @@ namespace TestLib
 
             Assert.IsFalse(engine.IsWithinBounds(-1, 0), "Negatív X nem szabad hogy a határon belül legyen.");
             Assert.IsFalse(engine.IsWithinBounds(0, 5), "Y koordináta a határon kívül kell lennie.");
+            Assert.IsFalse(engine.IsWithinBounds(0, -1), "Negatív X nem szabad hogy a határon belül legyen.");
+            Assert.IsFalse(engine.IsWithinBounds(-5, 0), "Y koordináta a határon kívül kell lennie.");
         }
     }
 }

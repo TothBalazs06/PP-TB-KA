@@ -4,19 +4,20 @@ namespace EntitesLib
 {
     public class Fox
     {
+        private const int MaxAge = 8; // Maximum életkor
+        private const int MinimumAgeToReproduce = 2; // Minimum életkor a szaporodáshoz
+        private const int ReproductionEnergyThreshold = 12; // Ennyi energiára van szüksége a rókának a szaporodáshoz
+        private const int MinimumEnergyToSurvive = 0; // Ha a nyúlnak energiája kisebb mint ez, akkor meghal
 
-        public int Energy;
+        public int Energy; // Azért publikus mert a tesztesetekhez szükséges
         public int Age { get; private set; }
         public bool IsAlive { get; private set; }
-        private const int MaxAge = 6; // maximum életkor
-        private const int ReproductionEnergyThreshold = 15; // ennyi energiára van szüksége a rókának a reprodukáláshoz
-        private const int MinimumEnergyToSurvive = 0; // ha a róka energiája kisebb mint ez akkor meghal
 
         public Fox()
         {
             Age = 0;
-            IsAlive = true; // élőként indul 
-            Energy = 10; // alap energia
+            IsAlive = true; // Élőként indul 
+            Energy = 10; // Alap energia
         }
 
         // Mozgás
@@ -28,25 +29,25 @@ namespace EntitesLib
 
             if (newX >= 0 && newX < grid.GetLength(0) && newY >= 0 && newY < grid.GetLength(1))
             {
-                // csak akkor mozog ha a cella üres
+                // Csak akkor mozog ha a cella üres
                 if (grid[newX, newY].Fox == null && grid[newX, newY].Rabbit == null)
                 {
                     grid[newX, newY].Fox = this;
-                    grid[x, y].Fox = null; // cella elhagyása
+                    grid[x, y].Fox = null; // Cella elhagyása
                 }
             }
         }
 
         public void EatRabbit()
         {
-            Energy += 10; // növeli az energiát
+            Energy += 4; // Növeli az energiát
         }
 
         public bool Survive()
         {
-            // ellenőrzi a róka élhet-e
+            // Ellenőrzi a róka élhet-e
             Age++;
-            Energy--; // csökketi az energiaszintet
+            Energy--; // Csökketi az energiaszintet
 
             if (Energy < MinimumEnergyToSurvive || Age > MaxAge)
             {
@@ -57,13 +58,13 @@ namespace EntitesLib
 
         public Fox Reproduce()
         {
-            // akkor szaporodhat ha megfelel a feltételnek
-            if (IsAlive && Age > 2 && Energy > ReproductionEnergyThreshold)
+            // Akkor szaporodhat, ha megfelel a feltételnek
+            if (IsAlive && Age > MinimumAgeToReproduce && Energy > ReproductionEnergyThreshold)
             {
-                Energy -= 5; // energia csökkenése a szaporodás miatt
-                return new Fox(); // visszad egy új rókát
+                Energy -= 5; // Energia csökkenése a szaporodás miatt
+                return new Fox(); // Visszad egy új rókát
             }
-            return null; // nincs szaporodás
+            return null; // Nincs szaporodás
         }
     }
 }

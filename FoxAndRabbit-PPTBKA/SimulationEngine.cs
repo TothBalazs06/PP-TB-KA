@@ -9,7 +9,7 @@ namespace FoxAndRabbit_PPTBKA
         private readonly int width;
         private readonly int height;
 
-        public SimulationEngine(int width, int height)
+        public SimulationEngine(int width, int height) 
         {
             this.width = width;
             this.height = height;
@@ -22,13 +22,13 @@ namespace FoxAndRabbit_PPTBKA
                 {
                     grid[i, j] = new Cell
                     {
-                        Grass = GrassState.Young, // a fű alapállapota
+                        Grass = GrassState.Young, // A fű alapállapota
                         Rabbit = null,
                         Fox = null
                     };
                 }
             }
-            grid[0, 0].Rabbit = new Rabbit(); // A (0, 0)-rá új nyúl betöltése
+            grid[0, 0].Rabbit = new Rabbit(); // A (0, 0)-ra új nyúl betöltése
 
         }
 
@@ -65,34 +65,51 @@ namespace FoxAndRabbit_PPTBKA
                         // Nyúl logikája
                         if (cell.Rabbit != null) // Csak akkor történjen bármi ha a cellában van egy nyúl
                         {
-                            // A nyúl mozgatása
-                            cell.Rabbit.Move(grid, i, j);
-
                             // Nyúl evési mechanikája
-                            Console.WriteLine($"Nyúl a ({i}, {j}) koordinátán enni próbál: '{cell.Grass}' füvet");
-                            if ((cell.Grass == GrassState.Young || cell.Grass == GrassState.Mature || cell.Grass == GrassState.Old) && cell.Rabbit != null) // Csak akkor eszik a nyúl ha a grassState young
+                            if (cell.Grass == GrassState.Empty)
+                            {
+                                Console.WriteLine($"Nyúl a ({i}, {j}) koordinátán enni próbál füvet, de nincs mit ennie.");
+                            }
+                            else if (cell.Grass == GrassState.Young)
+                            {
+                                Console.WriteLine($"Nyúl a ({i}, {j}) koordinátán fűkezdeményt eszik.");
+                            }
+                            else if (cell.Grass == GrassState.Mature)
+                            {
+                                Console.WriteLine($"Nyúl a ({i}, {j}) koordinátán zsenge füvet eszik.");
+                            }
+                            else if (cell.Grass == GrassState.Old)
+                            {
+                                Console.WriteLine($"Nyúl a ({i}, {j}) koordinátán kifejlett füvet eszik.");
+                            }
+
+                            if (cell.Grass == GrassState.Young || cell.Grass == GrassState.Mature || cell.Grass == GrassState.Old) // Csak akkor eszik a nyúl, ha a fű megfelel a feltételnek
                             {
                                 cell.Rabbit.Eat(cell.Grass); // Evés
                                 cell.Grass = GrassState.Empty; // Az evés után megváltoztatjuk a füvet
+                                Console.WriteLine($"Nyúl a ({i}, {j}) koordinátán füvet evett.");
                             }
                             else
                             {
                                 Console.WriteLine($"Nyúl a ({i}, {j}) koordinátán nem tudott enni füvet, mivel nincs mit ennie.");
                             }
 
+                            // A nyúl mozgatása
+                            cell.Rabbit.Move(grid, i, j); 
+
                             // Meghívjuk a Survive() metódust mely megnézi hogy él-e a nyúl
                             if (cell.Rabbit != null && !cell.Rabbit.Survive())
                             {
                                 Console.WriteLine($"Nyúl a ({i}, {j}) koordinátán elpusztult.");
-                                cell.Rabbit = null; // A nyúlat töröljük
+                                cell.Rabbit = null; // A nyulat töröljük
                             }
                             else if (cell.Rabbit != null) // Ha viszont még él akkor megpróbál reprodukálódni 
                             {
-                                Rabbit newRabbit = cell.Rabbit.Reproduce();
+                                Rabbit newRabbit = cell.Rabbit.Reproduce(); // Ez amit visszaad a Reproduce() metódus
                                 if (newRabbit != null)
                                 {
                                     // Megpróbáljuk lehelyezni egy közeli cellába
-                                    AddRabbitToAdjacentCell(i, j);
+                                    AddRabbitToAdjacentCell(i, j, newRabbit);
                                 }
                             }
 
@@ -104,31 +121,31 @@ namespace FoxAndRabbit_PPTBKA
                             // Róka mozgatása
                             cell.Fox.Move(grid, i, j);
 
-                            // Az evéshez ellenőrizzük hogy van-e nyúl a közelben
+                            // Az evéshez ellenőrizzük, hogy van-e nyúl a közelben
                             if (TryFindRabbitInAdjacentCells(i, j, out int rabbitX, out int rabbitY) && cell.Fox != null)
                             {
                                 cell.Fox.EatRabbit(); // A róka megeszi a nyulat
                                 Console.WriteLine($"Róka a ({i}, {j}) koordinátán megevett egy nyulat ({rabbitX}, {rabbitY}).");
-                                grid[rabbitX, rabbitY].Rabbit = null; //Nyulat töröljük ha megették
+                                grid[rabbitX, rabbitY].Rabbit = null; //Nyulat töröljük, ha megették
                             }
                             else
                             {
                                 Console.WriteLine($"Róka a ({i}, {j}) koordinátán nem talált nyulat az evéshez.");
                             }
 
-                            // Meghívjuk a Survive() metódust mely megnézi hogy él-e a róka
+                            // Meghívjuk a Survive() metódust mely megnézi, hogy él-e a róka
                             if (cell.Fox != null && !cell.Fox.Survive())
                             {
                                 Console.WriteLine($"Róka a ({i}, {j}) koordinátán elpusztult");
-                                cell.Fox = null; // A rókát töröljük ha már nem él
+                                cell.Fox = null; // A rókát töröljük, ha már nem él
                             }
                             else if (cell.Fox != null) // Ha viszont még él akkor megpróbál reprodukálódni 
                             {
-                                Fox newFox = cell.Fox.Reproduce();
+                                Fox newFox = cell.Fox.Reproduce(); // Ez amit visszaad a Reproduce() metódus
                                 if (newFox != null)
                                 {
                                     // Megpróbáljuk lehelyezni egy közeli cellába
-                                    AddFoxToAdjacentCell(i, j);
+                                    AddFoxToAdjacentCell(i, j, newFox);
                                 }
                             }
                         }
@@ -144,9 +161,10 @@ namespace FoxAndRabbit_PPTBKA
             }
         }
 
+        // Ellenőrizzük hogy van-e nyúl a közelben
         private bool TryFindRabbitInAdjacentCells(int x, int y, out int rabbitX, out int rabbitY)
         {
-            // Megnézzük hogy van-e a közelben nyúl (fel, le, balra, jobbra)
+            // Megnézzük, hogy van-e a közelben nyúl (fel, le, balra, jobbra)
             int[,] directions = new int[,] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
             for (int d = 0; d < directions.GetLength(0); d++)
             {
@@ -167,9 +185,9 @@ namespace FoxAndRabbit_PPTBKA
         }
 
 
-        private void AddFoxToAdjacentCell(int x, int y)
+        private void AddFoxToAdjacentCell(int x, int y, Fox newFox)
         {
-            // Megnézzük hogy le tudunk-e rakni rókát (fel, le, balra, jobbra)
+            // Megnézzük, hogy le tudunk-e rakni rókát (fel, le, balra, jobbra)
             int[,] directions = new int[,] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
             for (int d = 0; d < directions.GetLength(0); d++)
             {
@@ -178,14 +196,13 @@ namespace FoxAndRabbit_PPTBKA
 
                 if (IsWithinBounds(newX, newY) && grid[newX, newY].Fox == null)
                 {
-                    grid[newX, newY].Fox = new Fox();
+                    grid[newX, newY].Fox = newFox; // A Reproduce() metódus által visszaadott rókát tesszük le
                     Console.WriteLine($"Új rójka a ({newX}, {newY}) koordinátán");
                     return;
                 }
             }
-            //Console.WriteLine("Nincs hely új rókának.");
         }
-        private void AddRabbitToAdjacentCell(int x, int y)
+        private void AddRabbitToAdjacentCell(int x, int y, Rabbit newRabbit)
         {
             // Ugyanaz mint a rókánál
             int[,] directions = new int[,] { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
@@ -196,14 +213,13 @@ namespace FoxAndRabbit_PPTBKA
 
                 if (IsWithinBounds(newX, newY) && grid[newX, newY].Rabbit == null)
                 {
-                    grid[newX, newY].Rabbit = new Rabbit();
+                    grid[newX, newY].Rabbit = newRabbit; // A Reproduce() metódus által visszaadott nyulat tesszük le
                     Console.WriteLine($"Új nyúl született a ({newX}, {newY}) koordinátán.");
                     return;
                 }
             }
-            //Console.WriteLine("Nem volt hely ");
         }
-        // a nyúl és a rókák hozzáadásához szükséges, ugyanis ha a felh. megadott szamok kisebbek mint az alap akkor hibas lenne a kod
+        // A nyúl és a rókák hozzáadásához szükséges, ugyanis, ha a felh. megadott számok kisebbek mint az alap akkor hibas lenne a kod
         public bool IsWithinBounds(int x, int y)
         {
             return x >= 0 && x < width && y >= 0 && y < height;
@@ -220,7 +236,7 @@ namespace FoxAndRabbit_PPTBKA
         }
 
 
-        // a grid megjelenítése
+        // A mátrix megjelenítése, a nyulak, rókák és fű megjelenítése
         public void DisplayGrid()
         {
             for (int i = 0; i < width; i++)
@@ -236,9 +252,21 @@ namespace FoxAndRabbit_PPTBKA
                     {
                         Console.Write("F ");
                     }
-                    else
+                    else if (cell.Grass == GrassState.Empty)
                     {
                         Console.Write(". ");
+                    }
+                    else if (cell.Grass == GrassState.Young)
+                    {
+                        Console.Write(": ");
+                    }
+                    else if (cell.Grass == GrassState.Mature)
+                    {
+                        Console.Write("; ");
+                    }
+                    else if (cell.Grass == GrassState.Old)
+                    {
+                        Console.Write("* ");
                     }
                 }
                 Console.WriteLine();

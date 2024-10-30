@@ -5,18 +5,23 @@ namespace EntitesLib
     public class Cell
     {
         public GrassState Grass { get; set; }
-        public Rabbit Rabbit { get; set; }
-        public Fox Fox { get; set; }
+        public Rabbit? Rabbit { get; set; }
+        public Fox? Fox { get; set; }
 
         public Cell()
         {
-            Grass = GrassState.Young; // alapállapot
-            Rabbit = null; // alapállapot
-            Fox = null; // alapállapot
+            Grass = GrassState.Young; // Alapállapot
+            Rabbit = null; // Alapállapot
+            Fox = null; // Alapállapot
         }
 
+        // A fű frissítése az előző állapot alapján
         public void UpdateGrass()
         {
+            if (Grass == GrassState.Empty)
+            {
+                Grass = GrassState.Young;
+            }
             if (Grass == GrassState.Young)
             {
                 Grass = GrassState.Mature;
