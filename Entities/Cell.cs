@@ -10,27 +10,24 @@ namespace EntitesLib
 
         public Cell()
         {
-            Grass = GrassState.Young; // Initial state of grass
-            Rabbit = null; // initially no rabbit
-            Fox = null; // initially no fox
+            Grass = GrassState.Young; // alapállapot
+            Rabbit = null; // alapállapot
+            Fox = null; // alapállapot
         }
+
         public void UpdateGrass()
         {
-			if (Grass == GrassState.Empty)
-            {
-                Grass = GrassState.Young; // young fű lesz ha empty volt
-            }
             if (Grass == GrassState.Young)
             {
-                Grass = GrassState.Mature; // mature fű lesz ha young volt
+                Grass = GrassState.Mature;
             }
             else if (Grass == GrassState.Mature)
             {
-                Grass = GrassState.Old; // old lesz ha mature volt
+                Grass = GrassState.Old;
             }
             else if (Grass == GrassState.Old)
             {
-                Grass = GrassState.Empty; // visszaall uresre
+                Grass = GrassState.Empty;
             }
         }
     }

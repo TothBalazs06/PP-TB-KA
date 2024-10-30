@@ -1,7 +1,7 @@
 ﻿using EntitesLib;
 using System;
 
-namespace PPTBKA_FoxAndRabbits
+namespace FoxAndRabbit_PPTBKA
 {
     public class SimulationEngine
     {

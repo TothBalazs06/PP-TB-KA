@@ -5,11 +5,11 @@
         public int Age { get; private set; }
         public bool IsAlive { get; private set; }
         private const int MaxAge = 5; // max eletkor
-        private int energy;
+        public int Energy;
 
         public Rabbit()
         {
-            energy = 10; // alap energia szint
+            Energy = 10; // alap energia szint
             Age = 0;
             IsAlive = true; // élőként indul
         }
@@ -22,7 +22,7 @@
 
             if (newX >= 0 && newX < grid.GetLength(0) && newY >= 0 && newY < grid.GetLength(1))
             {
-                // Move only if the cell is empty
+                // csak akkor mozog ha üres a cella
                 if (grid[newX, newY].Rabbit == null && grid[newX, newY].Fox == null)
                 {
                     grid[newX, newY].Rabbit = this;
@@ -38,7 +38,19 @@
             {
                 Console.WriteLine("Egy nyúl evett.");
                 grass = GrassState.Empty;
-                energy += 5; //növeli az energiát
+                Energy += 5; //növeli az energiát
+            }
+            else if (grass == GrassState.Mature)
+            {
+                Console.WriteLine("Egy nyúl evett.");
+                grass = GrassState.Empty;
+                Energy += 7; //növeli az energiát
+            }
+            else if (grass == GrassState.Old)
+            {
+                Console.WriteLine("Egy nyúl evett.");
+                grass = GrassState.Empty;
+                Energy += 3; //növeli az energiát
             }
             else
             {
@@ -51,8 +63,8 @@
         {
             // ellenorzi hogy elhet-e a nyul
             Age++;
-            energy--; // csokkenti a nyul energia szintjet
-            if (energy < 0 || Age > MaxAge)
+            Energy--; // csokkenti a nyul energia szintjet
+            if (Energy < 0 || Age > MaxAge)
             {
                 IsAlive = false; // meghal
             }
@@ -61,9 +73,9 @@
 
         public Rabbit Reproduce()
         {
-            if (IsAlive && Age > 1 && energy > 5) // szapordik a nyúl ha megfelel
+            if (IsAlive && Age > 1 && Energy > 5) // szapordik a nyúl ha megfelel
             {
-                energy -= 2;
+                Energy -= 2;
                 Console.WriteLine("Egy nyúl szaporodott.");
                 return new Rabbit(); // visszad egy új nyulat
             }

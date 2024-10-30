@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using EntitesLib;
-using PPTBKA_FoxAndRabbits;
+using FoxAndRabbit_PPTBKA;
 
 namespace TestLib
 {

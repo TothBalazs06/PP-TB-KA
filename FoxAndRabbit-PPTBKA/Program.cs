@@ -1,7 +1,7 @@
 ﻿using System;
 using EntitesLib;
-using PPTBKA_FoxAndRabbits;
-namespace PPTBKA_FoxAndRabbits
+
+namespace FoxAndRabbit_PPTBKA
 {
     public class Program
     {
@@ -14,19 +14,16 @@ namespace PPTBKA_FoxAndRabbits
             int height = int.Parse(Console.ReadLine());
 
             SimulationEngine engine = new SimulationEngine(width, height);
-
-            Console.WriteLine("Nyomj Entert a következő körhöz!");
-            //ide kerülnek majd a rókák és nyulak meghívásai
-            engine.AddRabbit(1, 1);
             engine.AddRabbit(1, 1);
             engine.AddRabbit(1, 2);
             engine.AddFox(2, 2);
             engine.AddFox(2, 3);
             engine.AddFox(3, 4);
+            Console.WriteLine("Kezdődik a szimuláció! Nyomj Entert a következő körhöz.");
             while (true)
             {
                 Console.ReadLine();
-                //engine.NextTurn()
+                engine.NextTurn();
                 engine.DisplayGrid();
             }
         }
